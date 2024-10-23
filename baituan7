@@ -1,0 +1,58 @@
+#include <iostream>
+#include <limits>
+
+using namespace std;
+
+int main() {
+    int n;
+    cout << "Nhập số năm: ";
+    cin >> n;
+
+    int years[n]; // Mảng để lưu năm
+    int births[n]; // Mảng để lưu số lượng sinh ra
+
+    // Nhập dữ liệu cho từng năm
+    for (int i = 0; i < n; ++i) {
+        cout << "Nhập năm thứ " << (i + 1) << ": ";
+        cin >> years[i];
+        cout << "Nhập số lượng người sinh ra trong năm " << years[i] << ": ";
+        cin >> births[i];
+    }
+
+    int maxBirths = numeric_limits<int>::min();
+    int minBirths = numeric_limits<int>::max();
+
+    // Tìm số lượng sinh ra lớn nhất và bé nhất
+    for (int i = 0; i < n; ++i) {
+        if (births[i] > maxBirths) {
+            maxBirths = births[i];
+        }
+        if (births[i] < minBirths) {
+            minBirths = births[i];
+        }
+    }
+
+    // In ra kết quả
+    cout << "Số lượng người sinh ra lớn nhất: " << maxBirths << endl;
+    cout << "Các năm có số lượng sinh ra lớn nhất: ";
+    for (int i = 0; i < n; ++i) {
+        if (births[i] == maxBirths) {
+            cout << years[i] << " ";
+        }
+    }
+    cout << endl;
+
+    cout << "Số lượng người sinh ra bé nhất: " << minBirths << endl;
+    cout << "Các năm có số lượng sinh ra bé nhất: ";
+    for (int i = 0; i < n; ++i) {
+        if (births[i] == minBirths) {
+            cout << years[i] << " ";
+        }
+    }
+    cout << endl;
+
+    return 0;
+}
+
+    return 0;
+}
