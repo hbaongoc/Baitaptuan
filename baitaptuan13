@@ -1,0 +1,77 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+struct Node {
+    string customerName;        
+    int productCount;           
+    double totalCost;           
+    string productDetails;      
+    Node* next;                 
+};
+
+struct Queue {
+    Node* front;  // Con trỏ đầu hàng đợi
+    Node* rear;   // Con trỏ cuối hàng đợi
+
+    Queue() : front(nullptr), rear(nullptr) {}
+
+    void enqueue(string customerName, int productCount, double totalCost, string productDetails) {
+        Node* newNode = new Node{customerName, productCount, totalCost, productDetails, nullptr};
+        if (rear == nullptr) {
+            front = rear = newNode;
+        } else {
+            rear->next = newNode;
+            rear = newNode;
+        }
+    }
+
+    void dequeue() {
+        if (front == nullptr) {
+            cout << "Hàng đợi trống, không có khách hàng để xử lý.\n";
+            return;
+        }
+        Node* temp = front;
+        front = front->next;
+        if (front == nullptr) {
+            rear = nullptr;
+        }
+        cout << "Khách hàng " << temp->customerName << " đã được thanh toán xong.\n";
+        delete temp;
+    }
+
+    double calculateTotalRevenue() {
+        double totalRevenue = 0;
+        Node* current = front;
+        while (current != nullptr) {
+            totalRevenue += current->totalCost;
+            current = current->next;
+        }
+        return totalRevenue;
+    }
+    int countProductA(string productName) {
+        int productACount = 0;
+        Node* current = front;
+        while (current != nullptr) {
+            // Phân tích chuỗi productDetails để đếm số lượng sản phẩm
+            size_t pos = current->productDetails.find(productName + ":");
+            if (pos != string::npos) {
+                pos += productName.length() + 1;
+                int count = 0;
+                while (isdigit(current->productDetails[pos])) {
+                    count = count * 10 + (current->productDetails[pos] - '0');
+                    pos++;
+                }
+                productACount += count;
+            }
+            current = current->next;
+        }
+        return productACount;
+    }
+
+    ~Queue() {
+        while (front != nullptr) {
+            dequeue();
+        }
+    }
+};
