@@ -1,0 +1,122 @@
+#include <iostream>
+#include <vector>
+#include <queue>
+#include <unordered_map>
+#include <set>
+
+using namespace std;
+
+// Function to create adjacency matrix
+vector<vector<int>> createAdjacencyMatrix(vector<pair<int, int>> &edges, int numVertices) {
+    vector<vector<int>> matrix(numVertices, vector<int>(numVertices, 0));
+    for (auto &[u, v] : edges) {
+        matrix[u][v] = 1;
+    }
+    return matrix;
+}
+
+// Function to create adjacency list
+unordered_map<int, vector<int>> createAdjacencyList(vector<pair<int, int>> &edges) {
+    unordered_map<int, vector<int>> adjList;
+    for (auto &[u, v] : edges) {
+        adjList[u].push_back(v);
+    }
+    return adjList;
+}
+
+// BFS Traversal
+vector<int> bfs(unordered_map<int, vector<int>> &adjList, int start) {
+    vector<int> order;
+    set<int> visited;
+    queue<int> q;
+
+    q.push(start);
+    visited.insert(start);
+
+    while (!q.empty()) {
+        int vertex = q.front();
+        q.pop();
+        order.push_back(vertex);
+
+        for (int neighbor : adjList[vertex]) {
+            if (visited.find(neighbor) == visited.end()) {
+                visited.insert(neighbor);
+                q.push(neighbor);
+            }
+        }
+    }
+    return order;
+}
+
+// DFS Traversal
+void dfsHelper(unordered_map<int, vector<int>> &adjList, int vertex, set<int> &visited, vector<int> &order) {
+    visited.insert(vertex);
+    order.push_back(vertex);
+
+    for (int neighbor : adjList[vertex]) {
+        if (visited.find(neighbor) == visited.end()) {
+            dfsHelper(adjList, neighbor, visited, order);
+        }
+    }
+}
+
+vector<int> dfs(unordered_map<int, vector<int>> &adjList, int start) {
+    set<int> visited;
+    vector<int> order;
+    dfsHelper(adjList, start, visited, order);
+    return order;
+}
+
+int main() {
+    int numVertices = 7;
+    vector<pair<int, int>> edges = {
+        {0, 1}, {0, 2}, {0, 3},
+        {1, 4},
+        {2, 4},
+        {3, 5},
+        {4, 6},
+        {5, 4}, {5, 6}
+    };
+
+    // Create adjacency matrix and list
+    vector<vector<int>> adjMatrix = createAdjacencyMatrix(edges, numVertices);
+    unordered_map<int, vector<int>> adjList = createAdjacencyList(edges);
+
+    // Print adjacency matrix
+    cout << "Adjacency Matrix:" << endl;
+    for (const auto &row : adjMatrix) {
+        for (int val : row) {
+            cout << val << " ";
+        }
+        cout << endl;
+    }
+
+    // Print adjacency list
+    cout << "\nAdjacency List:" << endl;
+    for (const auto &[key, neighbors] : adjList) {
+        cout << key << ": ";
+        for (int neighbor : neighbors) {
+            cout << neighbor << " ";
+        }
+        cout << endl;
+    }
+
+    // Traverse graph using BFS and DFS
+    int startVertex = 0;
+    vector<int> bfsOrder = bfs(adjList, startVertex);
+    vector<int> dfsOrder = dfs(adjList, startVertex);
+
+    cout << "\nBFS Traversal Order: ";
+    for (int v : bfsOrder) {
+        cout << v << " ";
+    }
+    cout << endl;
+
+    cout << "DFS Traversal Order: ";
+    for (int v : dfsOrder) {
+        cout << v << " ";
+    }
+    cout << endl;
+
+    return 0;
+}
